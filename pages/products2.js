@@ -1,4 +1,5 @@
 import styles from '../styles/Products.module.css';
+import React, { useState, useEffect } from 'react';
 
 function Installment(props) {
   const fees = props.installment.hasFee ? 'com juros' : 'sem juros';
@@ -27,22 +28,34 @@ function ProductListItem(props) {
 }
 
 export default function ProductsForSaleList() {
+  const [error, setError] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [products, setProducts] = useState([]); 
 
-  const json_products = [
-    {
-      title: "Caneca Personalizada de Porcelana",
-      amount: 123.45,
-      installments: { number: 3, total: 41.15, hasFee: true }
-    },
-    {
-      title: "Caneca de Tulipa",
-      amount: 123.45,
-      installments: { number: 3, total: 41.15 },
-    },
-  ];
-
-  const products = json_products.map( 
-    (x, index) => <ProductListItem product={x} key={index} />
+  useEffect(() => {
+    fetch('http://127.0.0.1:5000/products')
+      .then((response) => response.json())
+      .then(
+        (json) => {
+          setIsLoaded(true);
+          setProducts(json);
+        },
+        (error) => {
+          setIsLoaded(true);
+          setError(error);
+        }
+      );
+  }, []
   );
-  return <div className={styles.container}>{products}</div>
-}
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  } else if (!isLoaded) {
+    return <div>carregando...</div>
+  } else {
+    const p = products.map(
+      (x, index) => <ProductListItem product={x} key={index} />
+    );
+    return <div className={styles.container}>{p}</div>
+  }
+};
