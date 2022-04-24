@@ -1,10 +1,15 @@
-import { useEffect, useStatte } from 'react';
+import { useEffect, useState } from 'react';
 
 import ItemList from './ItemsList';
 import Summary from './Summary';
+import { getCart, updateCart } from '../../api/api';
+
+const FIXED_CART_CODE = 'fixed-cart-code';
 
 function Cart(props) {
-  const [products, setProducts] = useStatte([]);
+  const [error, setError] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     setProducts(props.cart.products);
