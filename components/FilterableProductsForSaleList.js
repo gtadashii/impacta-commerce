@@ -1,10 +1,35 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { queryProducts } from '../api/api';
+import { queryProducts } from '../libs/api';
+import { currency } from '../libs/formatters';
 
-function Installment(props) {}
+function Installment(props) {
+  const fees = props.installment.hasFee ? 'com juros' : 'sem juros';
+  return (
+    <p>
+      em {props.installment.number}x de R$ {props.installment.total} {fees}
+    </p>
+  );
+}
 
-function ProductListItem(props) {}
+function ProductListItem(props) {
+  const defaultProductImage = 'https://via.placeholder.com/150';
+
+  return (
+    <div className='d-flex position-relative border my-2'>
+      <img src={defaultProductImage} className='flex-shrink-0 me-3' />
+      <div>
+        <Link href={`/products/${props.product.code}`}>
+          <a className='stretched-link'>
+            <h3 className='mt-0'>{props.product.title}</h3>
+          </a>
+        </Link>
+        <h4>{currency(props.product.amount)}</h4>
+        <Installment installment={props.product.installments} />
+      </div>
+    </div>
+  );
+}
 
 function SearchBar(props) {
   const [query, setQuery] = useState('');
@@ -24,7 +49,7 @@ function SearchBar(props) {
   }
 
   return (
-    <div className= 'row g-3'>
+    <div className='row g-3'>
       <div className='col'>
         <input
           type='text'
@@ -40,14 +65,14 @@ function SearchBar(props) {
         </button>
       </div>
     </div>
-  )
+  );
 }
 
 function FilterableProductsForSaleList() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [productsSearchResult, setProductsSearchResult] = useState({
-    result: []
+    results: [],
   });
 
   function clientSideQueryProduct(query) {
@@ -62,7 +87,6 @@ function FilterableProductsForSaleList() {
       }
     );
   }
-
   useEffect(() => {
     clientSideQueryProduct('');
   }, []);
@@ -88,7 +112,7 @@ function FilterableProductsForSaleList() {
       <SearchBar onSearch={handleOnSearch} />
       <div>{result}</div>
     </>
-  )
-};
+  );
+}
 
 export default FilterableProductsForSaleList;

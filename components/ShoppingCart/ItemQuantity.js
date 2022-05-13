@@ -16,8 +16,8 @@ function ItemQuantity(props) {
 
   function handleChange(e) {
     props.onQuantityChanged(
-      buildQuantityEventChanged(e.targe.value - props.product.qty)
-    );
+      buildQuantityEventChanged(e.target.value - props.product.qty)
+  );
   }
 
   return (
@@ -25,20 +25,20 @@ function ItemQuantity(props) {
       <button
         className='btn btn-outline-secondary'
         type='button'
-        onClicl={decrement}
+        onClick={decrement}
       >
         -
       </button>
       <input
         type='number'
         className='form-control text-center'
-        value={props.procuct.qty}
+        value={props.product.qty}
         onChange={handleChange}
       />
       <button
         className='btn btn-outline-secondary'
         type='button'
-        onClicl={increment}
+        onClick={increment}
       >
         +
       </button>
